@@ -169,7 +169,7 @@ delete_event(GtkWidget *window, GdkEvent *event, gpointer parent){
   GtkWidget *label = gtk_label_new(
         "กรุณายืนยัน, ต้องการออกจากโปรแกรมใช่หรือไม่");
   GtkWidget *image = gtk_image_new_from_stock(
-        GTK_STOCK_DIALOG_QUESTION, GTK_ICON_SIZE_DIALOG);
+        GTK_STOCK_DIALOG_QUESTION, GTK_ICON_SIZE_LARGE_TOOLBAR);
   GtkWidget *hbox = gtk_hbox_new(FALSE, 5);
  
   gtk_container_set_border_width(GTK_CONTAINER(hbox), 10);
