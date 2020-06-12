@@ -1,3 +1,9 @@
+/*
+ * https://developer.gnome.org/gtk2/stable/TreeWidget.html
+ * https://en.wikibooks.org/wiki/GTK%2B_By_Example/Tree_View/Tree_Models
+ * 
+ */
+
 #include <gtk/gtk.h>
 
 /* Create enum for display all columns */
@@ -27,17 +33,27 @@ int main(int argc, char *argv[]){
     G_TYPE_UINT);
   
   /* 3. Create iter */
-  GtkTreeIter iter;
+  GtkTreeIter iter1, iter2;
   
   /* 4. Append data to store referrence to &iter */
-  gtk_tree_store_append(store, &iter, NULL);
-  gtk_tree_store_set(store, &iter, 
+  gtk_tree_store_append(store, &iter1, NULL);
+  gtk_tree_store_set(store, &iter1, 
     TITLE_COLUMN, "คัมภีร์การใช้งานไมโครคอนโทรเลอร์", 
     AUTHOR_COLUMN, "เดชฤทธิ์ มณีธรรม", 
     QTY_COLUMN, 2, -1);
   
-  gtk_tree_store_append(store, &iter, NULL);
-  gtk_tree_store_set(store, &iter, 
+  gtk_tree_store_append(store, &iter2, &iter1);
+  gtk_tree_store_set(store, &iter2, 
+    TITLE_COLUMN, "เล่ม 1: Arduino", 
+    QTY_COLUMN, 1, -1);
+
+  gtk_tree_store_append(store, &iter2, &iter1);
+  gtk_tree_store_set(store, &iter2, 
+    TITLE_COLUMN, "เล่ม 2: Raspberry Pi", 
+    QTY_COLUMN, 1, -1);
+  
+  gtk_tree_store_append(store, &iter1, NULL);
+  gtk_tree_store_set(store, &iter1, 
     TITLE_COLUMN, "Mastering Qt5", 
     AUTHOR_COLUMN, "Guillame Lazar", 
     QTY_COLUMN, 1, -1);
