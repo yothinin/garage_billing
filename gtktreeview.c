@@ -1,3 +1,12 @@
+/* example:
+ * 
+ * http://www.compsci.hunter.cuny.edu/~sweiss/course_materials/csci493.70/lecture_notes/GTK_treeview.pdf
+ * https://en.wikibooks.org/wiki/GTK%2B_By_Example/Tree_View/Tree_Models
+ * https://stackoverflow.com/questions/45532565/how-to-get-the-data-of-an-activated-row-gtk-c
+ * https://developer.gnome.org/gtk2/stable/TreeWidget.html
+ * 
+ */
+
 #include <gtk/gtk.h>
 
 enum{
@@ -14,10 +23,13 @@ static GtkTreeModel *create_and_fill_model (void);
 static GtkWidget *create_view_and_model(void);
 void frm_customer(gpointer vbox, gpointer hbox);
 void sensitive_default(void);
+void view_clicked(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data);
+void view_selected(GtkTreeSelection *sel, gpointer data);
 
 int main(int argc, char *argv[]){
   //GtkWidget *win;
   GtkWidget *view;
+  GtkWidget *label;
   
   GtkWidget *button, *vbox, *hbox, *dlg;
   
@@ -34,13 +46,15 @@ int main(int argc, char *argv[]){
   hbox = gtk_hbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->vbox), hbox);
   
-  //win = gtk_window_new(GTK_WINDOW_TOPLEVEL);
-  //g_signal_connect(win, "delete_event", gtk_main_quit, NULL);
-  
   view = create_view_and_model();
-  //gtk_container_add(GTK_CONTAINER(win), view);
   gtk_box_pack_start(GTK_BOX(hbox), view, FALSE, FALSE, 0);
   
+  GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(view));
+  gtk_tree_selection_set_mode(GTK_TREE_SELECTION(sel), GTK_SELECTION_SINGLE);
+  
+  g_signal_connect(G_OBJECT(view), "row-activated", G_CALLBACK(view_clicked), NULL);
+  g_signal_connect(G_OBJECT(sel), "changed", G_CALLBACK(view_selected), NULL);
+     
   vbox = gtk_vbox_new(FALSE, 0);
   gtk_box_pack_start(GTK_BOX(hbox), vbox, FALSE, FALSE, 0);
   
@@ -50,10 +64,15 @@ int main(int argc, char *argv[]){
 
   frm_customer(vbox, hbox);
 
+  hbox = gtk_hbox_new(FALSE, 0);
+  gtk_box_pack_start(GTK_BOX(GTK_DIALOG(dlg)->vbox), hbox, FALSE, FALSE, 0);
+  label = gtk_label_new("*** คลิกรายชื่อเพื่อเลือกทำรายการ");
+  gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
   /* end entry zone */
 
   hbox = gtk_hbox_new(FALSE, 0);
   gtk_container_add(GTK_CONTAINER(GTK_DIALOG(dlg)->action_area), hbox);
+
   button = gtk_button_new_from_stock(GTK_STOCK_QUIT);
   g_signal_connect(G_OBJECT(button), "clicked", G_CALLBACK(gtk_main_quit), NULL);
   gtk_box_pack_end(GTK_BOX(hbox), button, FALSE, FALSE, 0);
@@ -61,6 +80,36 @@ int main(int argc, char *argv[]){
   gtk_widget_show_all(dlg);
   gtk_main();
   return 0;
+}
+
+void view_selected(GtkTreeSelection *sel, gpointer data){
+  GtkTreeIter iter;
+  GtkTreeModel *model;
+  if (gtk_tree_selection_get_selected(sel, &model, &iter)){
+    const gchar *code, *name, *phone;
+    gtk_tree_model_get(model, &iter, COL_CODE, &code, -1);
+    gtk_tree_model_get(model, &iter, COL_NAME, &name, -1);
+    gtk_tree_model_get(model, &iter, COL_PHONE, &phone, -1);
+
+    gtk_entry_set_text(GTK_ENTRY(entCode), code);
+    gtk_entry_set_text(GTK_ENTRY(entName), name);
+    gtk_entry_set_text(GTK_ENTRY(entPhone), phone);
+
+    g_print("Selected code: %s\n", code);
+  }
+}
+
+//void view_clicked(GtkWidget *widget, GtkTreePath *tree_path, gpointer user_data){
+void view_clicked(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data){
+  //GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+  GtkTreeModel *model = gtk_tree_view_get_model(treeview);
+  GtkTreeIter iter;
+  //GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+  
+  
+  if (gtk_tree_model_get_iter(model, &iter, path)){
+    g_print("Double Clicked\n");
+  }
 }
 
 void frm_customer(gpointer vbox, gpointer hbox){
