@@ -38,25 +38,41 @@ int main(int argc, char *argv[]){
   /* 4. Append data to store referrence to &iter */
   gtk_tree_store_append(store, &iter1, NULL);
   gtk_tree_store_set(store, &iter1, 
-    TITLE_COLUMN, "คัมภีร์การใช้งานไมโครคอนโทรเลอร์", 
+    TITLE_COLUMN, "คัมภีร์การใช้งานไมโครคอนโทรเลอร์ (0)", 
     AUTHOR_COLUMN, "เดชฤทธิ์ มณีธรรม", 
     QTY_COLUMN, 2, -1);
   
   gtk_tree_store_append(store, &iter2, &iter1);
   gtk_tree_store_set(store, &iter2, 
-    TITLE_COLUMN, "เล่ม 1: Arduino", 
+    TITLE_COLUMN, "เล่ม 1: Arduino (0:0)", 
     QTY_COLUMN, 1, -1);
 
   gtk_tree_store_append(store, &iter2, &iter1);
   gtk_tree_store_set(store, &iter2, 
-    TITLE_COLUMN, "เล่ม 2: Raspberry Pi", 
+    TITLE_COLUMN, "เล่ม 2: Raspberry Pi (0:1)", 
     QTY_COLUMN, 1, -1);
   
   gtk_tree_store_append(store, &iter1, NULL);
   gtk_tree_store_set(store, &iter1, 
-    TITLE_COLUMN, "Mastering Qt5", 
+    TITLE_COLUMN, "Mastering Qt5 (1)", 
     AUTHOR_COLUMN, "Guillame Lazar", 
     QTY_COLUMN, 1, -1);
+
+  gtk_tree_store_append(store, &iter2, &iter1);
+  gtk_tree_store_set(store, &iter2, 
+    TITLE_COLUMN, "Vol 1: Qt5 CookBook (1:0)", 
+    QTY_COLUMN, 1, -1);
+
+  gtk_tree_store_append(store, &iter2, &iter1);
+  gtk_tree_store_set(store, &iter2, 
+    TITLE_COLUMN, "Vol 2: Qt5 BluePrint (1:1)", 
+    QTY_COLUMN, 1, -1);
+
+  gtk_tree_store_append(store, &iter2, &iter1);
+  gtk_tree_store_set(store, &iter2, 
+    TITLE_COLUMN, "Vol 3: Qt Creater (1:2)", 
+    QTY_COLUMN, 1, -1);
+
 
   /* 5. Creaete tree to contain store and keep tree widget to win */
   GtkWidget *tree = gtk_tree_view_new_with_model(GTK_TREE_MODEL(store));
@@ -103,12 +119,13 @@ void view_selected(GtkTreeSelection *sel, gpointer data){
   GtkTreeModel *model;
   if (gtk_tree_selection_get_selected(sel, &model, &iter)){
     const gchar *title, *author;
-    const gint qty;
+    const gint qty = 0;
+    const gint n = gtk_tree_model_iter_n_children (model, &iter);
     
     gtk_tree_model_get(model, &iter, AUTHOR_COLUMN, &author, -1);
     gtk_tree_model_get(model, &iter, TITLE_COLUMN, &title, -1);
     gtk_tree_model_get(model, &iter, QTY_COLUMN, &qty, -1);
 
-    g_print("Author: %s, Title: %s, Qty: %d\n", author, title, qty);
+    g_print("iters: %d\n", n);
   }
 }
