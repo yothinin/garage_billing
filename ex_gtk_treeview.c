@@ -1,6 +1,7 @@
 /*
  * https://developer.gnome.org/gtk2/stable/TreeWidget.html
  * https://en.wikibooks.org/wiki/GTK%2B_By_Example/Tree_View/Tree_Models
+ * http://scentric.net/tutorial/sec-treemodel-rowref.html
  * 
  */
 
@@ -14,6 +15,7 @@ enum{
   COL_COUNTS
 };
 
+void view_dbclicked(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data);
 void view_selected(GtkTreeSelection *sel, gpointer data);
 
 int main(int argc, char *argv[]){
@@ -104,7 +106,8 @@ int main(int argc, char *argv[]){
   
   GtkTreeSelection *sel = gtk_tree_view_get_selection(GTK_TREE_VIEW(tree));
   gtk_tree_selection_set_mode(GTK_TREE_SELECTION(sel), GTK_SELECTION_SINGLE);
-  
+
+  g_signal_connect(G_OBJECT(tree), "row-activated", G_CALLBACK(view_dbclicked), NULL);
   g_signal_connect(G_OBJECT(sel), "changed", G_CALLBACK(view_selected), NULL);
 
   /* 7. Show all widget */
@@ -140,5 +143,22 @@ void view_selected(GtkTreeSelection *sel, gpointer data){
     //g_print("iters: %d\n", n);
     g_print("Path: %s\n", path_str);
     g_print("\tauthor: %s, title: %s, qty: %d\n", (author == NULL)?p_author:author, title, qty);
+  }
+}
+
+void view_dbclicked(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data){
+  //GtkTreeModel *model = gtk_tree_view_get_model(GTK_TREE_VIEW(widget));
+  GtkTreeModel *model = gtk_tree_view_get_model(treeview);
+  GtkTreeIter iter;
+  //GtkTreePath *path = gtk_tree_model_get_path(model, &iter);
+  
+  
+  if (gtk_tree_model_get_iter(model, &iter, path)){
+    if (gtk_tree_view_row_expanded(treeview, path)){
+      gtk_tree_view_collapse_row(treeview, path);
+    }else{
+      gtk_tree_view_expand_row(treeview, path, TRUE);
+    }
+    //g_print("Double Clicked\n");
   }
 }
