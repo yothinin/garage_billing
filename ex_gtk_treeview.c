@@ -139,6 +139,9 @@ void view_selected(GtkTreeSelection *sel, gpointer data){
     
     sel_path = gtk_tree_model_get_path(model, &iter);
     const gchar *path_str = gtk_tree_path_to_string(sel_path);
+    const gchar *iter_str = gtk_tree_model_get_string_from_iter(model, &iter);
+
+    g_print("%s:\n", iter_str);
 
     //g_print("iters: %d\n", n);
     g_print("Path: %s\n", path_str);
