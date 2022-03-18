@@ -26,8 +26,8 @@ create table if not exists gb_customers(
 	cus_zip_code	varchar(5)	NOT NULL,
 	cus_phone	varchar(10)	NOT NULL
 );
-drop table if exists tbl_customers;
 
+drop table if exists tbl_customers;
 create table tbl_customers
 (
 	num		smallint	NOT NULL	PRIMARY KEY,
