@@ -23,6 +23,8 @@ static GtkTreeModel *create_and_fill_model (void);
 static GtkWidget *create_view_and_model(void);
 void frm_customer(gpointer vbox, gpointer hbox);
 void sensitive_default(void);
+void sensitive_disable(void);
+void sensitive_edit(void);
 void view_clicked(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *column, gpointer data);
 void view_selected(GtkTreeSelection *sel, gpointer data);
 
@@ -94,8 +96,11 @@ void view_selected(GtkTreeSelection *sel, gpointer data){
     gtk_entry_set_text(GTK_ENTRY(entCode), code);
     gtk_entry_set_text(GTK_ENTRY(entName), name);
     gtk_entry_set_text(GTK_ENTRY(entPhone), phone);
+    
+    sensitive_disable();
 
     g_print("Selected code: %s\n", code);
+    
   }
 }
 
@@ -108,6 +113,7 @@ void view_clicked(GtkTreeView *treeview, GtkTreePath *path, GtkTreeViewColumn *c
   
   
   if (gtk_tree_model_get_iter(model, &iter, path)){
+    sensitive_edit();
     g_print("Double Clicked\n");
   }
 }
@@ -167,6 +173,7 @@ void frm_customer(gpointer vbox, gpointer hbox){
   gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 0);
 
   btnCancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
+  g_signal_connect(G_OBJECT(btnCancel), "clicked", G_CALLBACK(sensitive_disable), NULL);
   gtk_box_pack_end(GTK_BOX(hbox), btnCancel, FALSE, FALSE, 10);
 
   btnSave = gtk_button_new_from_stock(GTK_STOCK_SAVE);
@@ -183,6 +190,27 @@ void sensitive_default(void){
   gtk_widget_set_sensitive(entPhone, FALSE);
   gtk_widget_set_sensitive(btnSave, FALSE);
   gtk_widget_set_sensitive(btnCancel, FALSE);
+}
+
+void sensitive_disable(void){
+  gtk_widget_set_sensitive(entCode, FALSE);
+  gtk_widget_set_sensitive(entName, FALSE);
+  gtk_widget_set_sensitive(entAddr1, FALSE);
+  gtk_widget_set_sensitive(entAddr2, FALSE);
+  gtk_widget_set_sensitive(entPhone, FALSE);
+  gtk_widget_set_sensitive(btnSave, FALSE);
+  gtk_widget_set_sensitive(btnCancel, FALSE);
+}
+
+
+void sensitive_edit(void){
+  gtk_widget_set_sensitive(entCode, FALSE);
+  gtk_widget_set_sensitive(entName, TRUE);
+  gtk_widget_set_sensitive(entAddr1, TRUE);
+  gtk_widget_set_sensitive(entAddr2, TRUE);
+  gtk_widget_set_sensitive(entPhone, TRUE);
+  gtk_widget_set_sensitive(btnSave, TRUE);
+  gtk_widget_set_sensitive(btnCancel, TRUE);
 }
 
 static GtkWidget *create_view_and_model(void){
